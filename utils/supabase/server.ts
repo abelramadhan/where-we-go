@@ -28,3 +28,8 @@ export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
     },
   });
 };
+
+export const useServerClient = () => {
+  const cookie = cookies();
+  return createClient(cookie);
+};

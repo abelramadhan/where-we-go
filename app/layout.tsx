@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         lang='en'
         className={GeistSans.className}>
         <body className='bg-background text-foreground'>
-          <main className='flex min-h-screen flex-col items-center'>{children}</main>
+          <main className='flex min-h-[100dvh] flex-col items-center'>{children}</main>
         </body>
       </html>
     </SupabaseProvider>
