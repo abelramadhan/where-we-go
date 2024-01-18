@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
     }, false);
 
     if (isRouteProtected && session.data.session === null) {
-      return NextResponse.redirect(new URL('/', request.url));
+      return NextResponse.redirect(new URL('/login', request.url));
     }
 
     return response;

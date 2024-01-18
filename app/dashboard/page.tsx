@@ -4,6 +4,7 @@ import { useServerClient } from '@/utils/supabase/server';
 export default async function Dashboard() {
   const supabase = useServerClient();
   const user = await supabase.auth.getUser();
+  const activities = supabase.from('activity');
   return (
     <div className='space-y-4'>
       <div>
