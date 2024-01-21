@@ -3,17 +3,25 @@ import { useServerClient } from '../supabase/server';
 import { Database, Tables } from '@/types/database.types';
 
 const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
-  const getUserGroups = async (): Promise<PostgrestSingleResponse<Tables<'user_group'>>> => {
+  const getUserGroups = async (): Promise<PostgrestSingleResponse<Tables<'user_group'>[]>> => {
     const userId = (await supabase.auth.getUser()).data.user?.id;
     if (!userId) return unauthenticatedResponse;
     return supabase
       .from('user_group_relation')
       .select('...user_group (id, name)')
       .eq('user_id', userId!)
-      .returns<Tables<'user_group'>>();
+      .returns<Tables<'user_group'>[]>();
   };
 
-  return { getUserGroups };
+  const getGroupActivity = (groupId: number) => {
+    return supabase
+      .from('activity_group_relation')
+      .select('...activity(*)')
+      .eq('group_id', groupId)
+      .returns<Tables<'activity'>[]>();
+  };
+
+  return { getUserGroups, getGroupActivity };
 };
 
 const unauthenticatedResponse: PostgrestSingleResponse<any> = {
