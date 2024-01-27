@@ -1,16 +1,29 @@
-import { PropsWithChildren } from 'react';
-import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, Sheet } from '../ui/sheet';
+'use client';
 
-import { Button } from '../ui/button';
+import { PropsWithChildren, useState } from 'react';
+import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetFooter, Sheet } from '../../ui/sheet';
+
+import { Button } from '../../ui/button';
 import Link from 'next/link';
-import { HomeIcon } from 'lucide-react';
 import menus from '@/config/menus';
-import MapRenderer from '../helper/MapRenderer';
+import MapRenderer from '../../helper/MapRenderer';
+import { usePathname } from 'next/navigation';
 
 export default function NavMenuSheet(props: PropsWithChildren) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  const toggleSheet = () => setOpen((prev) => !prev);
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>{props.children}</SheetTrigger>
+    <Sheet
+      open={open}
+      onOpenChange={setOpen}>
+      <SheetTrigger
+        onClick={toggleSheet}
+        asChild>
+        {props.children}
+      </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Where We Go</SheetTitle>
@@ -20,8 +33,9 @@ export default function NavMenuSheet(props: PropsWithChildren) {
             items={menus}
             renderer={(menu) => (
               <Button
-                className='justify-start'
-                variant='ghost'
+                className='justify-start w-full'
+                variant={pathname === menu.href ? 'secondary' : 'ghost'}
+                onClick={toggleSheet}
                 asChild>
                 <Link
                   href={menu.href}

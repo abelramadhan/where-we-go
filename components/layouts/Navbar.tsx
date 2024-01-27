@@ -12,7 +12,7 @@ import {
   SheetClose,
   Sheet,
 } from '../ui/sheet';
-import NavMenuSheet from './NavMenuSheet';
+import NavMenuSheet from '../composites/navigation/NavMenuSheet';
 
 export default function Navbar() {
   const supabase = useServerClient();

@@ -1,9 +1,10 @@
 import { Tables } from '@/types/database.types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card';
 import { twMerge } from 'tailwind-merge';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { MoreVertical } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
+import ActivityCardDropdown from './ActivityCardDropdown';
 
 type ActivityCardProps = {
   activity: Tables<'activity'>;
@@ -20,36 +21,35 @@ export default function ActivityCard(props: ActivityCardProps) {
           <CardTitle>{activity.title}</CardTitle>
           <CardDescription>{activity.description}</CardDescription>
         </div>
-        <Button
-          className='!mt-0'
-          variant='ghost'
-          size='icon'>
-          <MoreVertical />
-        </Button>
+        <ActivityCardDropdown>
+          <Button
+            className='!mt-0 w-8 h-8'
+            variant='ghost'
+            size='icon'>
+            <MoreVertical className='h-6 w-6' />
+          </Button>
+        </ActivityCardDropdown>
       </CardHeader>
       <CardContent>
-        <div className='w-full grid grid-cols-3 gap-2'>
+        <div className='w-full grid grid-cols-2 gap-2'>
           <div>
             <p className='text-xs text-muted-foreground'>Budget Est.</p>
-            <h5 className='font-semibold'>{activity.budget ?? '-'} IDR</h5>
+            <h5 className='font-semibold text-sm'>{activity.budget ?? '-'} IDR</h5>
           </div>
           <div>
             <p className='text-xs text-muted-foreground'>Planned Date</p>
-            <h5 className='font-semibold'>{activity.planned_date ?? '-'}</h5>
+            <h5 className='font-semibold text-sm'>{activity.planned_date ?? '-'}</h5>
           </div>
-          <div>
+          {/* <div>
             <p className='text-xs text-muted-foreground'>Status</p>
             <Badge
               variant={'outline'}
               className={activity.checked ? 'border-green-500' : 'border-primary'}>
               {activity.checked ? 'Done!' : 'We go!'}
             </Badge>
-          </div>
+          </div> */}
         </div>
       </CardContent>
-      {/* <CardFooter>
-      <p>{item.checked}</p>
-    </CardFooter> */}
     </Card>
   );
 }

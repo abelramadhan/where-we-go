@@ -13,7 +13,12 @@ const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
       .returns<Tables<'user_group'>[]>();
   };
 
-  const getGroupActivity = (groupId: number) => {
+  const getGroup = async (groupId: number) => {
+    return supabase.from('user_group').select('*').eq('id', groupId).returns<Tables<'user_group'>>();
+  };
+
+  const getGroupActivity = async (groupId?: number): Promise<PostgrestSingleResponse<Tables<'activity'>[]>> => {
+    if (!groupId) return badRequestResponse;
     return supabase
       .from('activity_group_relation')
       .select('...activity(*)')
@@ -21,7 +26,19 @@ const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
       .returns<Tables<'activity'>[]>();
   };
 
-  return { getUserGroups, getGroupActivity };
+  const createGroup = async (input: { name: string }) => {
+    const res = await supabase.from('user_group').insert({ name: input.name }).select();
+    if (res.error) return res;
+    const groupId = res.data && res.data[0].id;
+    const relationRes = await supabase.from('user_group_relation').insert({ group_id: groupId });
+    return res;
+  };
+
+  const updateGroup = async (input: Partial<Tables<'user_group'>>) => {
+    return await supabase.from('user_group').update(input).select();
+  };
+
+  return { getUserGroups, getGroupActivity, getGroup, createGroup, updateGroup };
 };
 
 const unauthenticatedResponse: PostgrestSingleResponse<any> = {
@@ -30,6 +47,24 @@ const unauthenticatedResponse: PostgrestSingleResponse<any> = {
   status: 401,
   statusText: 'unauthenticated',
   error: { code: '404', message: 'unautenticated', details: 'unauthenticated', hint: 'not signed in' },
+};
+
+const badRequestResponse: PostgrestSingleResponse<any> = {
+  data: null,
+  count: null,
+  status: 400,
+  statusText: 'Bad Request',
+  error: { code: '404', message: 'Bad Request', details: 'Bad Request', hint: 'Bad Request' },
+};
+
+const buildErrorResponse = <T>(input: { status: number; message: string }): PostgrestSingleResponse<T> => {
+  return {
+    data: null,
+    count: null,
+    status: input.status,
+    statusText: input.message,
+    error: { code: '404', message: input.message, details: input.message, hint: input.message },
+  };
 };
 
 export default initQueryFunctions;
