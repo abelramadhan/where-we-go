@@ -5,3 +5,5 @@ type NavMenu = {
   icon: LucideIcon;
   href: string;
 };
+
+type ClassName = HTMLProps<HTMLElement>['className'];

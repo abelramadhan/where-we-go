@@ -6,7 +6,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Input, InputProps } from '@/components/ui/input';
 import { ComponentProps } from 'react';
 import { FieldValues } from 'react-hook-form';
 
@@ -14,6 +14,7 @@ type FormFieldProps<T extends FieldValues> = Omit<ComponentProps<typeof BaseForm
   label?: string;
   placeholder?: string;
   description?: string;
+  type?: InputProps['type'];
 };
 
 export default function FormField<T extends FieldValues>(props: FormFieldProps<T>) {
@@ -24,10 +25,20 @@ export default function FormField<T extends FieldValues>(props: FormFieldProps<T
         <FormItem>
           {props.label && <FormLabel>{props.label}</FormLabel>}
           <FormControl>
-            <Input
-              placeholder={props.placeholder}
-              {...field}
-            />
+            {props.type === 'number' ? (
+              <Input
+                type={props.type}
+                placeholder={props.placeholder}
+                {...field}
+                onChange={(e) => field.onChange(e.target.valueAsNumber)}
+              />
+            ) : (
+              <Input
+                type={props.type}
+                placeholder={props.placeholder}
+                {...field}
+              />
+            )}
           </FormControl>
           {props.description && <FormDescription>{props.description}</FormDescription>}
           <FormMessage />

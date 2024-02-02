@@ -28,25 +28,24 @@ export default function NavMenuSheet(props: PropsWithChildren) {
         <SheetHeader>
           <SheetTitle>Where We Go</SheetTitle>
         </SheetHeader>
-        <div className='my-4 flex flex-col gap-1'>
-          <MapRenderer
-            items={menus}
-            renderer={(menu) => (
-              <Button
-                className='justify-start w-full'
-                variant={pathname === menu.href ? 'secondary' : 'ghost'}
-                onClick={toggleSheet}
-                asChild>
-                <Link
-                  href={menu.href}
-                  className='inline-flex items-center gap-3'>
-                  <menu.icon size={24} />
-                  <h5 className='text-lg font-semibold'>{menu.label}</h5>
-                </Link>
-              </Button>
-            )}
-          />
-        </div>
+        <MapRenderer
+          className='my-4 flex flex-col gap-2'
+          items={menus}
+          renderer={(menu) => (
+            <Button
+              className='justify-start w-full'
+              variant={pathname === menu.href ? 'secondary' : 'ghost'}
+              onClick={toggleSheet}
+              asChild>
+              <Link
+                href={menu.href}
+                className='inline-flex items-center gap-3'>
+                <menu.icon size={24} />
+                <h5 className='text-lg font-semibold'>{menu.label}</h5>
+              </Link>
+            </Button>
+          )}
+        />
         <SheetFooter></SheetFooter>
       </SheetContent>
     </Sheet>

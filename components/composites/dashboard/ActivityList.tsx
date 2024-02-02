@@ -2,17 +2,21 @@
 
 import { Tables } from '@/types/database.types';
 import { useSupabase } from '@/utils/context/supabaseContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import MapRenderer from '../../helper/MapRenderer';
 import { Badge } from '../../ui/badge';
 import ActivityCard from './ActivityCard';
 import { PlusIcon } from 'lucide-react';
 import GroupFormDialog from '../dialogs/GroupFormDialog';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { group } from 'console';
 import { useLoading } from '@/utils/context/loadingContext';
 import { useToast } from '@/components/ui/use-toast';
 import { toast } from 'sonner';
+import FloatingMenu from './FloatingMenu';
+import ActivityFormDialog from '../dialogs/ActivityFormDialog';
+import dateSorter from '@/utils/helper/dateSorter';
+import ActivityDetailDialog from './ActivityDetailDialog';
 
 type ActivityListProps = {};
 
@@ -22,13 +26,20 @@ export default function ActivityList(props: ActivityListProps) {
 
   const [selectedGroup, setSelectedGroup] = useState<Tables<'user_group'>>();
 
-  const groupsQuery = useQuery('groups', getUserGroups);
-  const activitiesQuery = useQuery(['activities', selectedGroup?.id], () => getGroupActivity(selectedGroup?.id), {
-    refetchOnMount: false,
+  const groupsQuery = useQuery({ queryKey: ['groups'], queryFn: getUserGroups });
+  const activitiesQuery = useQuery({
+    queryKey: ['activities', selectedGroup?.id],
+    queryFn: () => getGroupActivity(selectedGroup?.id),
   });
 
   const groups = groupsQuery.data?.data ?? [];
   const activities = activitiesQuery.data?.data ?? [];
+
+  const upcomingActivities = useMemo(() => {
+    const filteredActivities = activities.filter((activity) => !activity.checked);
+    const sortedActivities = filteredActivities.sort(dateSorter);
+    return sortedActivities;
+  }, [activities]);
 
   useEffect(() => {
     if (selectedGroup || !groupsQuery.data?.data) return;
@@ -43,6 +54,11 @@ export default function ActivityList(props: ActivityListProps) {
   const onCreateGroupSuccess = () => {
     groupsQuery.refetch();
     toast.success('Success! Your group has been created');
+  };
+
+  const onCreateActivitySuccess = () => {
+    activitiesQuery.refetch();
+    toast.success(`Success! activity has been created for ${selectedGroup?.name}`);
   };
 
   return (
@@ -72,14 +88,27 @@ export default function ActivityList(props: ActivityListProps) {
       />
       <MapRenderer
         className='space-y-2'
-        items={activities}
+        items={upcomingActivities}
         renderer={(item) => (
-          <ActivityCard
-            activity={item}
-            key={item.id}
-          />
+          <ActivityDetailDialog activity={item}>
+            <div>
+              <ActivityCard
+                activity={item}
+                key={item.id}
+              />
+            </div>
+          </ActivityDetailDialog>
         )}
       />
+      {selectedGroup && (
+        <ActivityFormDialog
+          onSuccessSubmit={onCreateActivitySuccess}
+          group={selectedGroup}>
+          <div>
+            <FloatingMenu />
+          </div>
+        </ActivityFormDialog>
+      )}
     </div>
   );
 }

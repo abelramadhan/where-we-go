@@ -21,14 +21,14 @@ export default function ActivityCard(props: ActivityCardProps) {
           <CardTitle>{activity.title}</CardTitle>
           <CardDescription>{activity.description}</CardDescription>
         </div>
-        <ActivityCardDropdown>
+        {/* <ActivityCardDropdown>
           <Button
             className='!mt-0 w-8 h-8'
             variant='ghost'
             size='icon'>
             <MoreVertical className='h-6 w-6' />
           </Button>
-        </ActivityCardDropdown>
+        </ActivityCardDropdown> */}
       </CardHeader>
       <CardContent>
         <div className='w-full grid grid-cols-2 gap-2'>

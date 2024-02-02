@@ -19,12 +19,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from './drawer';
-import { useMediaQuery } from '@uidotdev/usehooks';
+
+import { useIsClient, useMediaQuery } from '@uidotdev/usehooks';
+import { ClassName } from '@/types/global';
+import { twMerge } from 'tailwind-merge';
 
 type ResponsiveDialogProps = PropsWithChildren & {
   title?: ReactNode;
   description?: ReactNode;
+  containerClassName?: ClassName;
   content?: ReactNode;
+  contentClassName?: ClassName;
   footer?: ReactNode;
   trigger?: ReactNode;
   open?: boolean;
@@ -32,7 +37,10 @@ type ResponsiveDialogProps = PropsWithChildren & {
 };
 
 export default function ResponsiveDialog(props: ResponsiveDialogProps) {
+  const isClient = useIsClient();
   const isDesktop = useMediaQuery('(min-width: 768px)');
+
+  if (!isClient) return;
 
   if (isDesktop) {
     return (
@@ -40,14 +48,14 @@ export default function ResponsiveDialog(props: ResponsiveDialogProps) {
         open={props.open}
         onOpenChange={props.onOpenChange}>
         {props.trigger && <DialogTrigger asChild>{props.trigger}</DialogTrigger>}
-        <DialogContent className='sm:max-w-[425px]'>
+        <DialogContent className={twMerge('sm:max-w-[425px]', props.containerClassName)}>
           {(props.title || props.description) && (
             <DialogHeader>
               {props.title && <DialogTitle>{props.title}</DialogTitle>}
               {props.description && <DialogDescription>{props.description}</DialogDescription>}
             </DialogHeader>
           )}
-          {props.content}
+          <div className={twMerge(props.contentClassName)}>{props.content}</div>
           {props.footer && <DialogFooter>{props.footer}</DialogFooter>}
         </DialogContent>
       </Dialog>
@@ -59,14 +67,14 @@ export default function ResponsiveDialog(props: ResponsiveDialogProps) {
       open={props.open}
       onOpenChange={props.onOpenChange}>
       {props.trigger && <DrawerTrigger asChild>{props.trigger}</DrawerTrigger>}
-      <DrawerContent>
+      <DrawerContent className={twMerge(props.containerClassName)}>
         {(props.title || props.description) && (
           <DrawerHeader className='text-left'>
             {props.title && <DrawerTitle>{props.title}</DrawerTitle>}
             {props.description && <DrawerDescription>{props.description}</DrawerDescription>}
           </DrawerHeader>
         )}
-        <div className='p-4'>{props.content}</div>
+        <div className={twMerge('p-4', props.contentClassName)}>{props.content}</div>
         {props.footer && <DrawerFooter>{props.footer}</DrawerFooter>}
       </DrawerContent>
     </Drawer>
