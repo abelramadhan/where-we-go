@@ -4,6 +4,7 @@ import { SupabaseClient, User, UserResponse } from '@supabase/supabase-js';
 import { PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { createClient } from '../supabase/client';
 import initQueryFunctions from '../api/ActivitiesApi';
+import { useQuery } from '@tanstack/react-query';
 
 type SupabaseContext = {
   supabase: SupabaseClient;
@@ -21,13 +22,20 @@ const SupabaseContext = createContext<SupabaseContext>({
 const SupabaseProvider = (props: PropsWithChildren) => {
   const supabase = createClient();
 
-  const [user, setUser] = useState<User | null>(null);
+  const getUser = async () => {
+    try {
+      const res = await supabase.auth.getSession();
+      return res.data.session?.user ?? null;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const { data } = useQuery({ queryKey: ['user'], queryFn: getUser });
+
+  const user = data ?? null;
 
   const queryFunctions = useMemo(() => initQueryFunctions(supabase), [supabase]);
-
-  useEffect(() => {
-    supabase.auth.getUser().then((res) => setUser(res.data.user));
-  }, [supabase]);
 
   return (
     <SupabaseContext.Provider value={{ supabase, user, ...queryFunctions }}>{props.children}</SupabaseContext.Provider>

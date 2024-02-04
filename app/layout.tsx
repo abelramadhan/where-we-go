@@ -15,8 +15,8 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <SupabaseProvider>
-      <QueryClientProvider>
+    <QueryClientProvider>
+      <SupabaseProvider>
         <html
           lang='en'
           className={GeistSans.className}>
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </main>
           </body>
         </html>
-      </QueryClientProvider>
-    </SupabaseProvider>
+      </SupabaseProvider>
+    </QueryClientProvider>
   );
 }

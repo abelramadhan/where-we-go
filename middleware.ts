@@ -1,30 +1,33 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/middleware';
 
-const protectedRoutes = ['/dashboard'];
-const authRoute = '/auth';
-const dashboardRoute = '/dashboard';
+const PROTECTED_ROUTES = ['/dashboard'];
+const AUTH_ROUTE = '/auth';
+
+const DASHBOARD_ROUTE = '/dashboard';
+const LOGIN_ROUTE = '/auth/login';
 
 export async function middleware(request: NextRequest) {
   try {
     const { supabase, response } = createClient(request);
 
     const session = await supabase.auth.getSession();
+    const isAuth = session.data.session !== null;
 
     const pathname = request.nextUrl.pathname;
 
-    const isRouteProtected = protectedRoutes.reduce((acc, route) => {
+    const isAuthRoute = pathname.startsWith(AUTH_ROUTE);
+
+    const isRouteProtected = PROTECTED_ROUTES.reduce((acc, route) => {
       return acc || pathname.startsWith(route);
     }, false);
 
-    const isAuthRoute = pathname.startsWith(authRoute);
-
-    if (isAuthRoute && session.data.session !== null) {
-      return NextResponse.redirect(new URL(dashboardRoute, request.url));
+    if (isAuthRoute && isAuth) {
+      return NextResponse.redirect(new URL(DASHBOARD_ROUTE, request.url));
     }
 
-    if (isRouteProtected && session.data.session === null) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+    if (isRouteProtected && !isAuth) {
+      return NextResponse.redirect(new URL(LOGIN_ROUTE, request.url));
     }
 
     return response;

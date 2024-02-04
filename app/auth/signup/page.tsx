@@ -41,7 +41,7 @@ export default function SignUp() {
     });
   };
 
-  if (!data?.error) {
+  if (data && data.data.user?.confirmed_at === undefined) {
     return (
       <Card>
         <CardHeader>
