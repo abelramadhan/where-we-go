@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/middleware';
 
 const protectedRoutes = ['/dashboard'];
+const authRoute = '/auth';
+const dashboardRoute = '/dashboard';
 
 export async function middleware(request: NextRequest) {
   try {
@@ -15,8 +17,14 @@ export async function middleware(request: NextRequest) {
       return acc || pathname.startsWith(route);
     }, false);
 
+    const isAuthRoute = pathname.startsWith(authRoute);
+
+    if (isAuthRoute && session.data.session !== null) {
+      return NextResponse.redirect(new URL(dashboardRoute, request.url));
+    }
+
     if (isRouteProtected && session.data.session === null) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/auth/login', request.url));
     }
 
     return response;
