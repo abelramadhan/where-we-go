@@ -34,23 +34,23 @@ export default function ActivityList(props: ActivityListProps) {
   });
 
   const groups = groupsQuery.data?.data ?? [];
-  const activities = activitiesQuery.data?.data ?? [];
 
   const upcomingActivities = useMemo(() => {
+    const activities = activitiesQuery.data?.data ?? [];
     const filteredActivities = activities.filter((activity) => !activity.checked);
     const sortedActivities = filteredActivities.sort(dateSorter);
     return sortedActivities;
-  }, [activities]);
+  }, [activitiesQuery]);
 
   useEffect(() => {
-    if (selectedGroup || !groupsQuery.data?.data) return;
+    if (selectedGroup !== undefined || !groupsQuery.data?.data) return;
     setSelectedGroup(groupsQuery.data.data[0]);
-  }, [groupsQuery.data]);
+  }, [groupsQuery.data, selectedGroup]);
 
   useEffect(() => {
     if (!selectedGroup) return;
     activitiesQuery.refetch();
-  }, [selectedGroup]);
+  }, [selectedGroup, activitiesQuery]);
 
   const onCreateGroupSuccess = (res: PostgrestSingleResponse<Tables<'user_group'>[]>) => {
     groupsQuery.refetch();

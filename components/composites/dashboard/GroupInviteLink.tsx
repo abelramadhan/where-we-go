@@ -25,21 +25,20 @@ export default function GroupInviteLink(props: GroupInviteLinkProps) {
 
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
-  const createInviteAndRefresh = async () => {
-    try {
-      if (!group) return;
-      const res = await createGroupInvite(group?.id);
-      if (res.error) return;
-      refetch();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     if (!data || data.data?.invite_code) return;
+    const createInviteAndRefresh = async () => {
+      try {
+        if (!group) return;
+        const res = await createGroupInvite(group?.id);
+        if (res.error) return;
+        refetch();
+      } catch (error) {
+        console.log(error);
+      }
+    };
     createInviteAndRefresh();
-  }, [data]);
+  }, [data, createGroupInvite, group, refetch]);
 
   useEffect(() => {
     if (!copiedText) return;

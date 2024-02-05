@@ -17,7 +17,7 @@ export default function GroupsPage() {
 
   useEffect(() => {
     getUserGroups().then((res) => setGroups(res.data ?? undefined));
-  }, []);
+  }, [getUserGroups]);
 
   return (
     <div className='space-y-4'>

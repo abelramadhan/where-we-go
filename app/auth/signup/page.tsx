@@ -64,7 +64,7 @@ export default function SignUp() {
           <Card>
             <CardHeader>
               <CardTitle>Sign Up</CardTitle>
-              <CardDescription>Hello There! Let's create an account shall we </CardDescription>
+              <CardDescription>Hello There! Let&apos;s create an account shall we </CardDescription>
             </CardHeader>
             <CardContent className='space-y-3'>
               <FormField

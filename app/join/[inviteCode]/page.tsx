@@ -14,7 +14,7 @@ export default async function JoinPage({ params }: { params: { inviteCode: strin
       <Card>
         <CardHeader>
           <CardTitle>Oops!</CardTitle>
-          <CardDescription>Sorry, we did not found the group you're looking for</CardDescription>
+          <CardDescription>Sorry, we did not found the group you&apos;re looking for</CardDescription>
         </CardHeader>
         <CardFooter>
           <Link href={DASHBOARD_ROUTE}>
@@ -46,7 +46,7 @@ export default async function JoinPage({ params }: { params: { inviteCode: strin
       <Card>
         <CardHeader>
           <CardTitle>Success!</CardTitle>
-          <CardDescription>You have sucessfully joined a group</CardDescription>
+          <CardDescription>You have successfully joined a group</CardDescription>
         </CardHeader>
         <CardFooter>
           <Link href={DASHBOARD_ROUTE}>

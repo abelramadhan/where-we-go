@@ -77,7 +77,7 @@ export default function Login() {
         </form>
       </Form>
       <p className='w-full text-center text-sm text-muted-foreground'>
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <a
           className='underline'
           href='/auth/signup'>
