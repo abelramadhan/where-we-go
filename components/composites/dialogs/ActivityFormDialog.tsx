@@ -101,7 +101,7 @@ export default function ActivityFormDialog(props: ActivityFormDialogProps) {
         <Button
           type='submit'
           onClick={form.handleSubmit(onSubmit)}>
-          Create Activity
+          {props.activity ? 'Save Changes' : 'Create Activity'}
         </Button>
       }
     />

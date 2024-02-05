@@ -13,6 +13,7 @@ import {
   Sheet,
 } from '../ui/sheet';
 import NavMenuSheet from '../composites/navigation/NavMenuSheet';
+import Logo from '../composites/other/Logo';
 
 export default function Navbar() {
   const supabase = useServerClient();
@@ -20,7 +21,7 @@ export default function Navbar() {
   return (
     <nav className='sticky w-full inline-flex justify-center items-center border-b border-input '>
       <div className='w-full max-w-4xl inline-flex justify-between items-center p-4 '>
-        <h3 className='text-xl font-bold'>Where We Go</h3>
+        <Logo size='sm' />
         <NavMenuSheet>
           <Button
             variant='outline'

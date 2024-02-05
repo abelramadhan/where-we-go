@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
@@ -20,6 +20,9 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirectTo');
+
   const form = useForm<z.infer<typeof formSchema>>({ resolver: zodResolver(formSchema) });
 
   const { withLoading } = useLoading();
@@ -32,7 +35,7 @@ export default function Login() {
     return withLoading(async () => {
       const res = await mutateAsync(values);
       if (res.error) return;
-      return replace(DASHBOARD_ROUTE);
+      return replace(redirectTo ?? DASHBOARD_ROUTE);
     });
   };
 

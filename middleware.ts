@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/middleware';
 
-const PROTECTED_ROUTES = ['/dashboard'];
+const PROTECTED_ROUTES = ['/dashboard', '/join'];
 const AUTH_ROUTE = '/auth';
 
 const DASHBOARD_ROUTE = '/dashboard';
@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (isRouteProtected && !isAuth) {
-      return NextResponse.redirect(new URL(LOGIN_ROUTE, request.url));
+      return NextResponse.redirect(new URL(`${LOGIN_ROUTE}?redirectTo=${pathname}`, request.url));
     }
 
     return response;

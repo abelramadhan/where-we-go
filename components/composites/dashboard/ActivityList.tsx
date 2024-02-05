@@ -9,14 +9,14 @@ import ActivityCard from './ActivityCard';
 import { PlusIcon } from 'lucide-react';
 import GroupFormDialog from '../dialogs/GroupFormDialog';
 import { useQuery } from '@tanstack/react-query';
-import { group } from 'console';
 import { useLoading } from '@/utils/context/loadingContext';
-import { useToast } from '@/components/ui/use-toast';
 import { toast } from 'sonner';
 import FloatingMenu from './FloatingMenu';
 import ActivityFormDialog from '../dialogs/ActivityFormDialog';
 import dateSorter from '@/utils/helper/dateSorter';
 import ActivityDetailDialog from './ActivityDetailDialog';
+import { PostgrestSingleResponse } from '@supabase/supabase-js';
+import GroupInviteDialog from '../dialogs/GroupInviteDialog';
 
 type ActivityListProps = {};
 
@@ -25,6 +25,7 @@ export default function ActivityList(props: ActivityListProps) {
   const { setLoading } = useLoading();
 
   const [selectedGroup, setSelectedGroup] = useState<Tables<'user_group'>>();
+  const [openInviteDialog, setOpenInviteDialog] = useState(false);
 
   const groupsQuery = useQuery({ queryKey: ['groups'], queryFn: getUserGroups });
   const activitiesQuery = useQuery({
@@ -51,9 +52,13 @@ export default function ActivityList(props: ActivityListProps) {
     activitiesQuery.refetch();
   }, [selectedGroup]);
 
-  const onCreateGroupSuccess = () => {
+  const onCreateGroupSuccess = (res: PostgrestSingleResponse<Tables<'user_group'>[]>) => {
     groupsQuery.refetch();
-    toast.success('Success! Your group has been created');
+    // toast.success('Success! Your group has been created');
+    if (res.data) {
+      setSelectedGroup(res.data[0]);
+      setOpenInviteDialog(true);
+    }
   };
 
   const onCreateActivitySuccess = () => {
@@ -90,7 +95,10 @@ export default function ActivityList(props: ActivityListProps) {
         className='space-y-2'
         items={upcomingActivities}
         renderer={(item) => (
-          <ActivityDetailDialog activity={item}>
+          <ActivityDetailDialog
+            group={selectedGroup}
+            refreshList={activitiesQuery.refetch}
+            activity={item}>
             <div>
               <ActivityCard
                 activity={item}
@@ -108,6 +116,15 @@ export default function ActivityList(props: ActivityListProps) {
             <FloatingMenu />
           </div>
         </ActivityFormDialog>
+      )}
+      {selectedGroup && (
+        <GroupInviteDialog
+          title='Success'
+          description='Your new group has been created! use the link below to invite your friend into this group'
+          group={selectedGroup}
+          open={openInviteDialog}
+          setOpen={setOpenInviteDialog}
+        />
       )}
     </div>
   );

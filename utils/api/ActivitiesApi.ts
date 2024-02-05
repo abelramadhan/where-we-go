@@ -1,5 +1,4 @@
-import { PostgrestResponse, PostgrestSingleResponse, SupabaseClient, User } from '@supabase/supabase-js';
-import { useServerClient } from '../supabase/server';
+import { PostgrestSingleResponse, SupabaseClient } from '@supabase/supabase-js';
 import { Database, Tables, TablesInsert, TablesUpdate } from '@/types/database.types';
 
 const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
@@ -13,16 +12,25 @@ const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
       .returns<Tables<'user_group'>[]>();
   };
 
-  const getGroup = async (groupId: number) => {
-    return supabase.from('user_group').select('*').eq('id', groupId).returns<Tables<'user_group'>>();
+  const getGroup = async (groupId: Tables<'user_group'>['id']) => {
+    return await supabase.from('user_group').select('*').eq('id', groupId).returns<Tables<'user_group'>>();
   };
 
-  const createGroup = async (input: { name: string }) => {
+  const getGroupInvite = async (groupId: Tables<'user_group'>['id']) => {
+    return await supabase.from('user_group_invite').select('*').eq('group_id', groupId).eq('is_used', false).single();
+  };
+
+  const createGroup = async (input: { name: string }): Promise<PostgrestSingleResponse<Tables<'user_group'>[]>> => {
     const res = await supabase.from('user_group').insert({ name: input.name }).select();
     if (res.error) return res;
     const groupId = res.data && res.data[0].id;
     const relationRes = await supabase.from('user_group_relation').insert({ group_id: groupId });
+    const inviteRes = await supabase.from('user_group_invite').insert({ group_id: groupId });
     return res;
+  };
+
+  const createGroupInvite = async (groupId: Tables<'user_group'>['id']) => {
+    return supabase.from('user_group_invite').insert({ group_id: groupId }).select();
   };
 
   const updateGroup = async (input: Partial<Tables<'user_group'>>) => {
@@ -50,21 +58,28 @@ const initQueryFunctions = (supabase: SupabaseClient<Database>) => {
   };
 
   const updateActivity = async (activity: TablesUpdate<'activity'>) => {
-    return supabase.from('activity').update(activity).select();
+    return supabase.from('activity').update(activity).eq('id', activity.id!).select();
   };
 
-  const markActivityCheck = async (activityId: TablesUpdate<'activity'>['id']) => {
-    return supabase.from('activity').update({ id: activityId, checked: true }).select();
+  const deleteActivity = async (activityId: Tables<'activity'>['id']) => {
+    return supabase.from('activity').delete().eq('id', activityId).select();
+  };
+
+  const markActivityCheck = async (activityId: Tables<'activity'>['id']) => {
+    return supabase.from('activity').update({ checked: true }).eq('id', activityId).select();
   };
 
   return {
     getUserGroups,
     getGroupActivity,
     getGroup,
+    getGroupInvite,
     createGroup,
+    createGroupInvite,
     updateGroup,
     createActivity,
     updateActivity,
+    deleteActivity,
     markActivityCheck,
   };
 };

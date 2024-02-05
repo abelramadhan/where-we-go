@@ -1,5 +1,7 @@
 'use client';
 
+import GroupCard from '@/components/composites/dashboard/GroupCard';
+import GroupInviteDialog from '@/components/composites/dialogs/GroupInviteDialog';
 import MapRenderer from '@/components/helper/MapRenderer';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tables } from '@/types/database.types';
@@ -25,13 +27,8 @@ export default function GroupsPage() {
       </div>
       <MapRenderer
         items={groups}
-        renderer={(item) => (
-          <Card>
-            <CardHeader>
-              <CardTitle>{item.name}</CardTitle>
-            </CardHeader>
-          </Card>
-        )}
+        className='space-y-2'
+        renderer={(item) => <GroupCard group={item} />}
       />
     </div>
   );
