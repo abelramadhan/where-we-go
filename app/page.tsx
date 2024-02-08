@@ -5,52 +5,32 @@ import ConnectSupabaseSteps from '@/components/ConnectSupabaseSteps';
 import SignUpUserSteps from '@/components/SignUpUserSteps';
 import Header from '@/components/Header';
 import { cookies } from 'next/headers';
+import Logo from '@/components/composites/other/Logo';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default async function Index() {
-  const cookieStore = cookies();
-
-  const canInitSupabaseClient = () => {
-    // This function is just for the interactive tutorial.
-    // Feel free to remove it once you have Supabase connected.
-    try {
-      createClient(cookieStore);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  const isSupabaseConnected = canInitSupabaseClient();
-
   return (
-    <div className='flex w-full flex-1 flex-col items-center gap-20'>
-      <nav className='flex h-16 w-full justify-center border-b border-b-foreground/10'>
-        <div className='flex w-full max-w-4xl items-center justify-between p-3 text-sm'>
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
+    <div className='relative flex-1 h-screen w-full flex flex-col items-center justify-center gap-1'>
+      <div className='flex flex-col items-start'>
+        <Logo size='lg' />
+        <p className='text-muted-foreground'>Plan activities with your friends!</p>
+        <div className='inline-flex gap-3 mt-4'>
+          <Link href={'/dashboard'}>
+            <Button size={'sm'}>Get Started!</Button>
+          </Link>
+          <Link href={'/auth/signup'}>
+            <Button
+              size={'sm'}
+              variant={'secondary'}>
+              Sign Up
+            </Button>
+          </Link>
         </div>
-      </nav>
-
-      <div className='animate-in flex max-w-4xl flex-1 flex-col gap-20 px-3 opacity-0'>
-        <Header />
-        <main className='flex flex-1 flex-col gap-6'>
-          <h2 className='mb-4 text-4xl font-bold'>Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
       </div>
-
-      <footer className='flex w-full justify-center border-t border-t-foreground/10 p-8 text-center text-xs'>
-        <p>
-          Powered by{' '}
-          <a
-            href='https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs'
-            target='_blank'
-            className='font-bold hover:underline'
-            rel='noreferrer'>
-            Supabase
-          </a>
-        </p>
-      </footer>
+      <div className='absolute w-fill bottom-0 p-4 text-center'>
+        <p className='text-muted-foreground/60 text-sm'>This simple app is made by Abel Ramadhan</p>
+      </div>
     </div>
   );
 }
