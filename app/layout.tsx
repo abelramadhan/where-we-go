@@ -12,6 +12,7 @@ export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: 'Where We Go',
   description: 'The fastest way to build apps with Next.js and Supabase',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
