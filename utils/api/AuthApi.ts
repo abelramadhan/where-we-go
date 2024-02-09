@@ -14,13 +14,13 @@ const signUp = async (values: { email: string; password: string }) => {
   const { email, password } = values;
   const supabase = createClient();
 
-  const host = window?.location?.host;
+  const origin = window?.location?.origin;
 
   return await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${host}/auth/callback`,
+      emailRedirectTo: `${origin}/auth/callback`,
     },
   });
 };

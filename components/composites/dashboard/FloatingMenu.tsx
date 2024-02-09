@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { PlusCircleIcon, PlusIcon, XCircleIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -20,8 +20,6 @@ type FloatingMenuProps = {
 export default function FloatingMenu(props: FloatingMenuProps) {
   const [open, setOpen] = useState(false);
 
-  const toggleOpen = () => setOpen((prev) => !prev);
-
   const handleClick = () => {
     props.onClick && props.onClick();
     props.subButtons && setOpen(true);
@@ -29,7 +27,7 @@ export default function FloatingMenu(props: FloatingMenuProps) {
 
   return (
     <>
-      <div className='fixed right-6 bottom-6 z-40'>
+      <div className='fixed right-6 bottom-24 z-40'>
         <Button
           onClick={() => handleClick()}
           className='h-16 w-16 shadow-lg !rounded-xl '

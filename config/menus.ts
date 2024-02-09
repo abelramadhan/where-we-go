@@ -1,11 +1,11 @@
 import { NavMenu } from '@/types/global';
-import { LayoutPanelLeftIcon, UserIcon, UsersIcon } from 'lucide-react';
+import { HomeIcon, LayoutPanelLeftIcon, UserIcon, UsersIcon } from 'lucide-react';
 
 const menus: NavMenu[] = [
-  { label: 'Dashboard', icon: LayoutPanelLeftIcon, href: '/dashboard' },
-  { label: 'Activities', icon: LayoutPanelLeftIcon, href: '/dashboard' },
+  { label: 'Home', icon: HomeIcon, href: '/dashboard' },
+  { label: 'Activities', icon: LayoutPanelLeftIcon, href: '/dashboard/activities' },
   { label: 'Groups', icon: UsersIcon, href: '/dashboard/groups' },
-  { label: 'Profile', icon: UserIcon, href: '/dashboard/groups' },
+  { label: 'Profile', icon: UserIcon, href: '/dashboard/profile' },
 ];
 
 export default menus;
